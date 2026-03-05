@@ -46,9 +46,10 @@
         /* Mobilde PDF alırken responsive kırılımı kapatıp A4 yerleşimi zorlar */
         body.pdf-mode .container {
             width: 210mm !important;
-            height: 297mm !important;
+            height: auto !important;
+            min-height: 297mm !important;
             padding: 12px !important;
-            font-size: 12px !important;
+            font-size: 11px !important;
         }
 
         body.pdf-mode .header-top,
@@ -56,6 +57,10 @@
         body.pdf-mode .payment-grid,
         body.pdf-mode .signature-section {
             grid-template-columns: 1fr 1fr !important;
+        }
+        
+        body.pdf-mode * {
+            box-sizing: border-box !important;
         }
 
         @media (max-width: 768px) {
@@ -850,38 +855,41 @@
             dedication.style.display = 'none';
             document.body.classList.add('pdf-mode');
 
-            const opt = {
-                margin: 0,
-                filename: 'Tahsilat_Makbuzu_' + new Date().toISOString().split('T')[0] + '.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { 
-                    scale: 2,
-                    useCORS: true,
-                    letterRendering: true,
-                    windowWidth: 1200,
-                    width: 794,
-                    height: 1123
-                },
-                jsPDF: { 
-                    unit: 'px',
-                    format: [794, 1123],
-                    orientation: 'portrait',
-                    compress: true
-                },
-                pagebreak: { mode: 'avoid-all' }
-            };
+            // CSS render için kısa bekleme
+            setTimeout(() => {
+                const opt = {
+                    margin: 0,
+                    filename: 'Tahsilat_Makbuzu_' + new Date().toISOString().split('T')[0] + '.pdf',
+                    image: { type: 'jpeg', quality: 0.95 },
+                    html2canvas: { 
+                        scale: 1.5,
+                        useCORS: true,
+                        letterRendering: true,
+                        windowWidth: 1200,
+                        scrollY: 0,
+                        scrollX: 0
+                    },
+                    jsPDF: { 
+                        unit: 'mm',
+                        format: 'a4',
+                        orientation: 'portrait',
+                        compress: true
+                    },
+                    pagebreak: { mode: 'avoid-all' }
+                };
 
-            html2pdf().set(opt).from(element).save().then(() => {
-                document.body.classList.remove('pdf-mode');
-                button.style.display = 'block';
-                dedication.style.display = 'block';
-            }).catch((error) => {
-                console.error('PDF hatasi:', error);
-                alert('PDF oluşturulurken hata oluştu.');
-                document.body.classList.remove('pdf-mode');
-                button.style.display = 'block';
-                dedication.style.display = 'block';
-            });
+                html2pdf().set(opt).from(element).save().then(() => {
+                    document.body.classList.remove('pdf-mode');
+                    button.style.display = 'block';
+                    dedication.style.display = 'block';
+                }).catch((error) => {
+                    console.error('PDF hatasi:', error);
+                    alert('PDF oluşturulurken hata oluştu.');
+                    document.body.classList.remove('pdf-mode');
+                    button.style.display = 'block';
+                    dedication.style.display = 'block';
+                });
+            }, 100);
         }
 
         function parseMoneyValue(value) {
