@@ -14,6 +14,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Tahsilat Makbuzu">
     
+    <!-- PDF Kütüphanesi -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -816,10 +819,34 @@
         </div>
     </div>
 
-    <button class="print-btn" onclick="window.print()">📄 PDF Olarak Kaydet</button>
+    <button class="print-btn" onclick="kaydetPDF()">📄 PDF Olarak Kaydet</button>
     <div class="dedication-note">Html Designed By Sefa YAPRAKLI</div>
 
     <script>
+        function kaydetPDF() {
+            const element = document.querySelector('.container');
+            const button = document.querySelector('.print-btn');
+            const dedication = document.querySelector('.dedication-note');
+            
+            // Butonu gizle
+            button.style.display = 'none';
+            dedication.style.display = 'none';
+            
+            const opt = {
+                margin: 8,
+                filename: 'Tahsilat_Makbuzu_' + new Date().toISOString().split('T')[0] + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                // PDF kaydettikten sonra butonu tekrar göster
+                button.style.display = 'block';
+                dedication.style.display = 'block';
+            });
+        }
+        
         function parseMoneyValue(value) {
             if (!value) return 0;
             const normalized = value.toString().trim().replace(/\./g, '').replace(',', '.');
