@@ -17,8 +17,7 @@
     <meta name="apple-mobile-web-app-title" content="Tahsilat Makbuzu">
     <meta name="mobile-web-app-capable" content="yes">
     
-    <!-- PDF Kütüphanesi -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Artik script gerek yok, tarayici native print kullanacak -->
     
     <style>
         * {
@@ -552,25 +551,42 @@
         }
 
         @media print {
-            body {
-                background-color: white;
-                padding: 8mm 0 0 0;
+            @page {
+                size: A4 portrait;
                 margin: 0;
             }
 
-            .container {
+            body {
+                background-color: white;
+                padding: 0;
+                margin: 0;
                 width: 210mm;
-                min-height: 280mm;
+                height: 297mm;
+            }
+
+            .container {
+                width: 210mm !important;
+                max-width: 210mm !important;
+                height: 297mm !important;
+                max-height: 297mm !important;
                 box-shadow: none;
-                padding: 12px;
-                margin: 0 auto;
-                font-size: 10px !important;
+                padding: 8mm !important;
+                margin: 0 !important;
+                font-size: 8px !important;
+                overflow: hidden !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
             }
 
             .print-btn {
-                display: none;
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                height: 0 !important;
+                overflow: hidden !important;
             }
 
+            button,
             .dedication-note {
                 display: none !important;
             }
@@ -842,7 +858,7 @@
         </div>
     </div>
 
-    <button class="print-btn" onclick="kaydetPDF()">📄 PDF Olarak Kaydet</button>
+    <button class="print-btn" onclick="window.print()">📄 PDF Olarak Kaydet</button>
     <div class="dedication-note">Html Designed By Sefa YAPRAKLI</div>
 
     <script>
